@@ -29,28 +29,6 @@ slim = tf.contrib.slim
 
 
 import os
-def set_metrics(preds,labels):
-    metrics_ops = {}
-    with tf.name_scope("recall"):
-        for i,pred in enumerate(preds):
-            recall = tf.metrics.recall(labels,pred)
-            metrics_ops["recall_{}".format(i)] = recall
-            tf.summary.scalar("recall_layer_{}".format(i),recall[0])
-
-    with tf.name_scope("accuracy"):
-        for i,pred in enumerate(preds):
-            recall = tf.metrics.recall(labels,pred)
-            accu = tf.metrics.accuracy(labels,pred)
-            metrics_ops["accu_{}".format(i)] = accu
-            tf.summary.scalar("accu_{}".format(i),accu[0])
-
-    with tf.name_scope("precision"):
-        for i,pred in enumerate(preds):
-            recall = tf.metrics.recall(labels,pred)
-            precision  = tf.metrics.precision(labels,pred)
-            metrics_ops["precision_{}".format(i)] = precision
-            tf.summary.scalar("precision_{}".format(i),precision[0])
-    return metrics_ops
 def assign_from_checkpoint_fn(model_path, var_list, ignore_missing_vars=False,
                               reshape_variables=False):
   """Returns a function that assigns specific variables from a checkpoint.
@@ -134,18 +112,32 @@ def wsd_softmax_conv_model_fn(
         pred = tf.to_int32(prob > params['threshold_T'])
         preds.append(pred)
 
-    metrics_ops = set_metrics(preds,labels)
+    metrics_ops = {}
+    with tf.name_scope("recall"):
+        for i,pred in enumerate(preds):
+            recall = tf.metrics.recall(labels,pred)
+            metrics_ops["recall_{}".format(i)] = recall
+            tf.summary.scalar("recall_layer_{}".format(i),recall[0])
+
+    with tf.name_scope("accuracy"):
+        for i,pred in enumerate(preds):
+            recall = tf.metrics.recall(labels,pred)
+            accu = tf.metrics.accuracy(labels,pred)
+            metrics_ops["accu_{}".format(i)] = accu
+            tf.summary.scalar("accu_{}".format(i),accu[0])
+
+    with tf.name_scope("precision"):
+        for i,pred in enumerate(preds):
+            recall = tf.metrics.recall(labels,pred)
+            precision  = tf.metrics.precision(labels,pred)
+            metrics_ops["precision_{}".format(i)] = precision
+            tf.summary.scalar("precision_{}".format(i),precision[0])
+
     losses = split_layer_softmax(cls_relate_features,labels)
     total_loss = tf.add_n(losses)
     tf.summary.scalar("total_loss",total_loss)
 
     if mode == tf.estimator.ModeKeys.PREDICT:
-        predictions = {
-            "feature_maps": cls_relate_features,
-
-        }
-        return tf.estimator.EstimatorSpec(mode,
-                predictions=predictions)
         pass
 
     #accuracy = tf.metrics.accuracy(labels,)
@@ -157,6 +149,7 @@ def wsd_softmax_conv_model_fn(
 
     #if mode == tf.estimator.ModeKeys.TRAIN:
     assert mode == tf.estimator.ModeKeys.TRAIN
+
     training_hooks = []
 
     #resotre from vgg

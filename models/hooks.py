@@ -27,9 +27,10 @@ def get_variable_vgg(model_path):
 class RestoreHook(tf.train.SessionRunHook):
   def __init__(self, init_fn):
     self.init_fn = init_fn
-  def afterc_create_session(self,session, coord=None):
+  def after_create_session(self, session, coord=None):
     if session.run(tf.train.get_or_create_global_step()) == 0:
       self.init_fn(session)
+
 
 def main():
   pass

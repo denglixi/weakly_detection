@@ -13,6 +13,7 @@ from __future__ import print_function
 from weakly_detection.models.wsd_softmax_split import wsd_softmax_split_model
 from weakly_detection.models.wsd_softmax_split_sigmoid import wsd_softmax_split_sigmoid_model 
 from weakly_detection.models.wsd_softmax_conv import wsd_softmax_conv_model_fn 
+from weakly_detection.models.wsd_softmax_gap import wsd_softmax_gap_model_fn
 
 def get_model_fn(model_name):
   if model_name == 'softmax_split':
@@ -21,6 +22,8 @@ def get_model_fn(model_name):
     return wsd_softmax_split_sigmoid_model 
   if model_name == 'softmax_conv':
     return wsd_softmax_conv_model_fn
+  if model_name == 'softmax_gap':
+    return wsd_softmax_gap_model_fn
   
 def main():
   pass

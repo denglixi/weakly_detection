@@ -1,9 +1,10 @@
 log*
 results
 data
-
+models/__pycache__/
 *.record
 .idea
 utils
-
+*pyc
+*.swp
 slim

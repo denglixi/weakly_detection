@@ -42,7 +42,7 @@ def wsd_softmax_split_model(
     for key,feature in feature_maps.items():
         feature_shape = feature.get_shape()
         feature_shape.assert_has_rank(rank=4)
-        class_relate_features.append(tf.reduce_sum(feature, [1,2]))
+        class_relate_features.append(tf.reduce_mean(feature, [1,2]))
         
     #logits = tf.add_n(class_relate_features)
     losses = []

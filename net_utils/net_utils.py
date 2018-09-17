@@ -93,11 +93,11 @@ def get_class_relate_feature(feature_maps, class_num=20):
                     padding='same')
     return feature_maps
 
-def dict_feature_conv_to_cls(feature_maps, channel_num=20):
+def dict_feature_conv_to_cnls(feature_maps, channel_num=20):
     '''
     use 3x3 conv the features in dict to [b, n,n,cls_num]
     '''
-    with tf.name_scope("class_relate_feature"):
+    with tf.name_scope("conv_to_channel"):
         for key, feature in feature_maps.items():
             feature_maps[key] = tf.layers.conv2d(feature, 
                     filters=channel_num, 
